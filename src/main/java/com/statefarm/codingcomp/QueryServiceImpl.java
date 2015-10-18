@@ -1,9 +1,8 @@
 package com.statefarm.codingcomp;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.text.ParsePosition;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 import com.statefarm.codingcomp.model.Email;
 import com.statefarm.codingcomp.model.User;
@@ -11,11 +10,38 @@ import com.statefarm.codingcomp.reader.Reader;
 
 public class QueryServiceImpl implements QueryService {
 
-    Reader reader = new Reader();
+    Reader reader;
+    Set<User> users;
+    Set<Email> emails;
+
+    public QueryServiceImpl() {
+        reader = new Reader();
+        users = new HashSet<>();
+        emails = new HashSet<>();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+
+        try {
+            for(int i=1; i<5; i++) {
+                String[] data = reader.read(i, "users.txt");
+                for(String s : data) {
+                    String[] line = s.split(",");
+                    users.add(new User(line[1], line[2]));
+                }
+            }
+            for(int i=1; i<5; i++) {
+                String[] data = reader.read(i, "mail.txt");
+                for(String s : data) {
+                    String[] line = s.split(",");
+                    emails.add(new Email(line[0], line[1], sdf.parse(line[2], new ParsePosition(0))));
+                }
+            }
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     @Override
     public List<User> usersByDomain( String domain ) throws Exception {
-        // TODO Auto-generated method stub
         return null;
     }
 
